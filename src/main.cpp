@@ -5,6 +5,7 @@
 #include<vector>
 #include<sstream>
 #include "sql.hpp"
+#include "table.hpp"
 
 
 int main(){
@@ -15,13 +16,13 @@ int main(){
 
     db->create_table(table_name);
     
-    task_record tc1;
+    TaskRecord tc1;
     tc1.name = "build cli";
     tc1.description = "Build out the main CLI for the applications including controls";
     tc1.complete = 0;
     tc1.priority = 2;
 
-    task_record tc2;
+    TaskRecord tc2;
     tc2.name = "build out table class";
     tc2.description = "create table class which handles printing as well as sorting and managing the tables";
     tc2.complete = 0;
@@ -31,15 +32,16 @@ int main(){
 
     db->insert_task(table_name,tc2);
 
-    std::vector<task_record> tasks = db->select_table(table_name);
-    fort::char_table table;
-    table << fort::header<< "ID"<<"NAME"<<"DESCRIPTION"<<"COMPLETE"<<"PRIORITY"<<fort::endr;
+    std::vector<TaskRecord> tasks = db->select_table(table_name);
 
-    for(auto tc: tasks){
-        table<<tc.id<<tc.name<<tc.description<<tc.complete<<tc.priority<<fort::endr;
-    }
+    RecordTable rt;
+    rt.records = tasks;
 
-    std::cout<< table.to_string()<<std::endl;
+    rt.draw_table();
+    rt.sort_by_priority();
+    rt.draw_table();
+
+
 
     delete db;
 
